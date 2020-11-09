@@ -57,7 +57,7 @@ class Account(AbstractBaseUser):
 	phone_number = PhoneNumberField(default='1234567890')
 
 	USERNAME_FIELD = 'email'   # This with login with email
-	REQUIRED_FIELDS = ['phone_number']  # other than email
+	REQUIRED_FIELDS = ['username']  # other than email
 
 	objects= MyAccountManager()
 
