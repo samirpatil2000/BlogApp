@@ -22,7 +22,13 @@
                 <div class="post-details">
                   <div class="post-meta d-flex justify-content-between">
                     <div class="date meta-last">20 May | 2016</div>
-                    <div class="category"><a href="#">Business</a></div>
+
+                    <div class="category">
+                      {% for cat in obj.cat.all %}
+                      <a href="#">{{ cat.name }}</a>
+                      {% endfor %}
+                    </div>
+
                   </div>
                   <a href="{{ obj.get_absolute_post_url }}">
                     <h3 class="h4">{{ obj.title}}</h3>

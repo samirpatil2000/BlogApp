@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Post,Author
+from .models import Post,Author,Category,Tag
 from .forms import CreatePostForm,UpdatePostForm
 
 # Create your views here.
@@ -15,20 +15,28 @@ def index(request):
     return render(request,'blog/index.html',context)
 
 def blogs(request):
+    cats=Category.objects.all()
+    tags=Tag.objects.all()
     posts = Post.objects.all()
-    latest= Post.objects.order_by('-date_posted')
+    latest= Post.objects.order_by('-date_posted')[0:3]
     context = {
         'object': posts,
         'latest':latest,
+        'cats':cats,
+        'tags':tags,
     }
     return render(request,'blog/blog.html',context)
 
 def post_detail(request, id):
+    cats=Category.objects.all()
+    tags=Tag.objects.all()
     post=get_object_or_404(Post,id=id)
     latest= Post.objects.order_by('-date_posted')[0:3]
     context = {
         'object': post,
-        'latest':latest
+        'latest':latest,
+        'cats':cats,
+        'tags':tags,
     }
     return render(request,'blog/post-detail.html',context)
 
@@ -43,7 +51,7 @@ def create_post(request):
     if request.method=="POST":
         form=CreatePostForm(request.POST or None, request.FILES or None)
         if form.is_valid():
-            post=form.save(commit=True)
+            post=form.save(commit=False)
             post.author=author_
             post.save()
             messages.warning(request,'You Post Has Been Created')
@@ -52,21 +60,25 @@ def create_post(request):
     context={
         "form":form
     }
-    return render(request,'blog/create-post-detail.html',context)
+    return render(request,'blog/create-post.html',context)
 
 
 def update_post(request,id):
+    author_=Author.objects.get(user=request.user)
     post=Post.objects.get(id=id)
 
-    if post.author.user == request.user:
+    if post.author.user != request.user:
         messages.warning(request, "Restricted ..!")
         return redirect('index')
+
     if request.method == "POST":
         update_form = UpdatePostForm(request.POST or None, request.FILES or None)
         if update_form.is_valid():
-            post = update_form.save(commit=True)
-            post.save()
-            messages.warning(request, 'You Post Has Been Updated')
+            post_ = update_form.save(commit=False)
+            post_.author=author_
+            post_.save()
+            post=post_
+            messages.warning(request, f'{post.title} Has Been Updated')
             return redirect('post',id=id)
 
     form=UpdatePostForm(
@@ -79,4 +91,5 @@ def update_post(request,id):
     context = {
         "form": form
     }
-    return render(request, 'blog/update-post-detail.html', context)
+    return render(request, 'blog/update-post.html', context)
+cats=Category.objects.all()
