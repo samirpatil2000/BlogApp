@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 # Create your models here.
+from mptt.models import MPTTModel,TreeForeignKey
 
 
 class Category(models.Model):
@@ -47,3 +48,19 @@ class Post(models.Model):
         return reverse('post',kwargs={'id':self.id})
 
 
+class Comment(MPTTModel):
+    post=models.ForeignKey(Post,on_delete=models.CASCADE,related_name='comments')
+    parent=TreeForeignKey('self',on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    name = models.CharField(max_length=50, default='Samir Patil')
+    email = models.EmailField(default="email@gmail.com")
+    content = models.TextField(default="This is the comment")
+    publish = models.DateTimeField(auto_now_add=True)
+    status = models.BooleanField(default=True)
+
+
+
+    class MPTTMeta:
+        order_insertion_by = ['publish']
+
+    def __str__(self):
+        return f'comment on {self.post.title}'

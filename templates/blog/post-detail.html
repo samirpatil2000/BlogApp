@@ -1,6 +1,10 @@
 {% extends 'blog/base.html' %}
 {% block body %}
 {% load static %}
+{% load crispy_forms_tags %}
+
+{% load mptt_tags %}
+
     <div class="container">
       <div class="row">
         <!-- Latest Posts -->
@@ -56,21 +60,33 @@
                       <h6>I Bought a Wedding Dress.</h6>
                     </div>
                     <div class="icon next"><i class="fa fa-angle-right">   </i></div></a></div>
+
+
                 <div class="post-comments">
                   <header>
-                    <h3 class="h6">Post Comments<span class="no-of-comments">(3)</span></h3>
+                    <h3 class="h6">Post Comments<span class="no-of-comments">( {{ comments.count }} )</span></h3>
                   </header>
+                  {% recursetree comments %}
                   <div class="comment">
                     <div class="comment-header d-flex justify-content-between">
                       <div class="user d-flex align-items-center">
-                        <div class="image"><img src="img/user.svg" alt="..." class="img-fluid rounded-circle"></div>
-                        <div class="title"><strong>Jabi Hernandiz</strong><span class="date">May 2016</span></div>
+                        <div class="image"><img src="{% static 'img/user.svg' %}" alt="..." class="img-fluid rounded-circle"></div>
+                        <div class="title"><strong>{{ node.name }}</strong><span class="date">May 2016 level[{{ node.level }}]</span></div>
                       </div>
                     </div>
                     <div class="comment-body">
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+                      <p id="{{ node.id }}">{{ node.content }}</p>
                     </div>
+                      {% if node.level < 6 %}
+                         <a class="btn btn-outline-info" onclick="myFunction({{ node.id }})">Reply</a>
+                      {% endif %}
                   </div>
+                    {% if not node.is_leaf_node %}
+                      <div class="children pl-2 pl-md-5">
+                        {{ children }}
+                      </div>
+                    {% endif %}
+                  {% endrecursetree %}
                   {% comment %}
                   <div class="comment">
                     <div class="comment-header d-flex justify-content-between">
@@ -100,6 +116,17 @@
                   <header>
                     <h3 class="h6">Leave a reply</h3>
                   </header>
+                  <form method="POST">
+                      {% csrf_token %}
+                      <fieldset class="form-group">
+                          <legend class="'border-bottom mb-4">Comment  Form </legend>
+                         {{ comment_form | crispy  }}
+                      </fieldset>
+                      <div class="form-group">
+                          <button class="btn btn-outline-info" type="submit">Send</button>
+                      </div>
+                  </form>
+                  {% comment %}
                   <form action="#" class="commenting-form">
                     <div class="row">
                       <div class="form-group col-md-6">
@@ -116,6 +143,7 @@
                       </div>
                     </div>
                   </form>
+                  {% endcomment %}
                 </div>
               </div>
             </div>
@@ -128,6 +156,34 @@
 
 
     <!-- JavaScript files-->
+<script>
+        function formExit() {
+            document.getElementById("newForm").remove();
+        }
+        function myFunction(id) {
+           if (document.contains(document.getElementById("newForm"))) {
+             document.getElementById("newForm").remove();
+           }
+             var d1 = document.getElementById(id);
+             d1.insertAdjacentHTML('afterend',
+                  '<form id="newForm" class="form-insert py-2" method="post"> \
+                        <div class="d-flex justify-content-between"><h2>Reply:</h2><div><button type="button" class="btn btn-danger" onclick="formExit()"">Close</button></div></div> \
+                        <label for="id_name">Name:</label> \
+                        <input type="text" name="name" class="col-sm-12" maxlength="50" required="" id="id_name">\
+                        <select name="parent" class="d-none" id="id_parentt"> \
+                        <option value="' + id + '" selected="' + id + '"></option> \
+                        </select> \
+                        <label for="id_email">Email:</label> \
+                        <input type="text" name="email" class="col-sm-12" maxlength="254" required="" id="id_email"> \
+                        <label for="id_content">Content:</label> \
+                        <textarea name="content" cols="40" rows="5" class="form-control" required id="id_content"></textarea> \
+                        {% csrf_token %} \
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button> \
+                  </form>');
 
+            //document.querySelector('#id_parentt [value="' + id + '"]').selected = true;
+        }
+      $('#myForm').trigger("reset");
+      </script>
 
-  {% endblock body %}
+{% endblock body %}

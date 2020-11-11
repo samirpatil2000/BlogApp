@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third Party
     'crispy_forms',
     'phonenumber_field',
     'phonenumbers',
+    'mptt',
 
     #Apps
     'account',

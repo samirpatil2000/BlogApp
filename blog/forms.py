@@ -1,5 +1,6 @@
 from django import forms
-from .models import Post
+from .models import Post,Comment
+from mptt.forms import TreeNodeChoiceField
 
 
 class CreatePostForm(forms.ModelForm):
@@ -21,3 +22,21 @@ class UpdatePostForm(forms.ModelForm):
         if commit:
             post.save()
         return post
+
+
+class CommentForm(forms.ModelForm):
+    parent=TreeNodeChoiceField(queryset=Comment.objects.all())
+
+    # TODO we have to remove required parent field
+    #
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # THis for removing the selected option box from comment form
+        self.fields['parent'].widget.attrs.update(
+            {'class': 'd-none'})
+        self.fields['parent'].label = ''
+        self.fields['parent'].required = False
+
+    class Meta:
+        model = Comment
+        fields = ['name', 'parent', 'email', 'content']

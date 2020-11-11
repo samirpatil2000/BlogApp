@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Post,Author,Category,Tag
-from .forms import CreatePostForm,UpdatePostForm
+from .models import Post,Author,Category,Tag,Comment
+from .forms import CreatePostForm,UpdatePostForm,CommentForm
 
 # Create your views here.
 def index(request):
@@ -33,14 +33,33 @@ def blogs(request):
 def post_detail(request, id):
     cats=Category.objects.all()
     tags=Tag.objects.all()
-    # cat_post=Post.objects.filter
+
     post=get_object_or_404(Post,id=id)
     latest= Post.objects.order_by('-date_posted')[0:3]
+
+    comments=Comment.objects.filter(post__id=id)
+    comment_form = CommentForm()
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            user_comment=comment_form.save(commit=False)
+            user_comment.post=post
+            user_comment.save()
+            return redirect('post',id=id)
+
+
+    # cat_post=Post.objects.filter
+
     context = {
         'object': post,
         'latest':latest,
         'cats':cats,
         'tags':tags,
+
+        # COMMENTS
+        'comments':comments,
+        'comment_form':comment_form,
+
     }
     return render(request,'blog/post-detail.html',context)
 
