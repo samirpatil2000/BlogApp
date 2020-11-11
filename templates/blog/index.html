@@ -36,7 +36,11 @@
                 <div class="text-inner d-flex align-items-center">
                   <div class="content">
                     <header class="post-header">
-                      <div class="category"><a href="#">Business</a><a href="#">Technology</a></div>
+                            <div class="category">
+                              {% for cat in object.cat.all %}
+                              <a href="{{ cat.get_absolute_cat_url }}">{{ cat.name }}</a>
+                              {% endfor %}
+                            </div>
                         <a href="{{ object.get_absolute_post_url }}">
                             <h2 class="h4">{{ object.title }}</h2>
                         </a>
@@ -61,8 +65,15 @@
                     <div class="text-inner d-flex align-items-center">
                       <div class="content">
                         <header class="post-header">
-                            <div class="category"><a href="#">Business</a><a href="#">Technology</a></div><a href="{{ object.get_absolute_post_url }}">
-                              <h2 class="h4">{{ object.title }}</h2></a>
+
+                            <div class="category">
+                              {% for cat in object.cat.all %}
+                              <a href="{{ cat.get_absolute_cat_url }}">{{ cat.name }}</a>
+                              {% endfor %}
+                            </div>
+                            <a href="{{ object.get_absolute_post_url }}">
+                              <h2 class="h4">{{ object.title }}</h2>
+                            </a>
                         </header>
                           <p>{{ object.content|safe|linebreaks|truncatechars:200 }}</p>
                           <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
@@ -130,7 +141,11 @@
                 <div class="post-details">
                   <div class="post-meta d-flex justify-content-between">
                     <div class="date">20 May | 2016</div>
-                    <div class="category"><a href="#">Business</a></div>
+                            <div class="category">
+                              {% for cat in obj.cat.all %}
+                              <a href="{{ cat.get_absolute_cat_url }}">{{ cat.name }}</a>
+                              {% endfor %}
+                            </div>
                   </div><a href="{{ obj.get_absolute_post_url }}">
                     <h3 class="h4">{{ obj.title }}</h3></a>
                   <p class="text-muted">{{ obj.content|safe|linebreaks|truncatechars:200}}</p>

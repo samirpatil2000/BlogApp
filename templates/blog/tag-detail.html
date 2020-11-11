@@ -1,0 +1,122 @@
+
+{% extends 'blog/base.html'%}
+
+  {% block body %}
+{% load static %}
+
+    <div class="container">
+      <div class="row">
+        <!-- Latest Posts -->
+
+        <main class="posts-listing col-lg-8"> 
+          <div class="container">
+            <h3>{{ tag.name }}</h3>
+            <br>
+            <div class="row">
+              <!-- post -->
+              {% for obj in object %}
+              <div class="post col-xl-6">
+                <div class="post-thumbnail">
+                  <a href="{{ obj.get_absolute_post_url }}">
+                    <img src="{% static 'img/blog-post-1.jpeg' %}" alt="..." class="img-fluid">
+                  </a>
+                </div>
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+                    <div class="date meta-last">20 May | 2016</div>
+
+                    <div class="category">
+                      {% for cat in obj.cat.all %}
+                      <a href="#">{{ cat.name }}</a>
+                      {% endfor %}
+                    </div>
+
+                  </div>
+                  <a href="{{ obj.get_absolute_post_url }}">
+                    <h3 class="h4">{{ obj.title}}</h3>
+                  </a>
+                  <p class="text-muted">{{ obj.content|safe|linebreaks|truncatechars:200}}</p>
+                  <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
+                      <div class="avatar"><img src="{% static 'img/avatar-3.jpg' %}" alt="..." class="img-fluid"></div>
+                      <div class="title"><span>{{ object.author.user.username }}</span></div></a>
+                    <div class="date"><i class="icon-clock"></i> {{ object.date_posted }} ago</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>12</div>
+                  </footer>
+                </div>
+              </div>
+              {% endfor %}
+              <!-- post             -->
+              {% comment %}
+              <div class="post col-xl-6">
+                <div class="post-thumbnail"><a href="post.html"><img src="img/blog-post-2.jpg" alt="..." class="img-fluid"></a></div>
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+                    <div class="date meta-last">20 May | 2016</div>
+                    <div class="category"><a href="#">Business</a></div>
+                  </div><a href="post.html">
+                    <h3 class="h4">Alberto Savoia Can Teach You About Interior</h3></a>
+                  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                  <div class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
+                      <div class="avatar"><img src="img/avatar-2.jpg" alt="..." class="img-fluid"></div>
+                      <div class="title"><span>John Doe</span></div></a>
+                    <div class="date"><i class="icon-clock"></i> 2 months ago</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>12</div>
+                  </div>
+                </div>
+              </div>
+              <!-- post             -->
+              <div class="post col-xl-6">
+                <div class="post-thumbnail"><a href="post.html"><img src="img/blog-post-3.jpeg" alt="..." class="img-fluid"></a></div>
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+                    <div class="date meta-last">20 May | 2016</div>
+                    <div class="category"><a href="#">Business</a></div>
+                  </div><a href="post.html">
+                    <h3 class="h4">Alberto Savoia Can Teach You About Interior</h3></a>
+                  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                  <div class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
+                      <div class="avatar"><img src="img/avatar-3.jpg" alt="..." class="img-fluid"></div>
+                      <div class="title"><span>John Doe</span></div></a>
+                    <div class="date"><i class="icon-clock"></i> 2 months ago</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>12</div>
+                  </div>
+                </div>
+              </div>
+              <!-- post -->
+              <div class="post col-xl-6">
+                <div class="post-thumbnail"><a href="post.html"><img src="img/blog-post-4.jpeg" alt="..." class="img-fluid"></a></div>
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+                    <div class="date meta-last">20 May | 2016</div>
+                    <div class="category"><a href="#">Business</a></div>
+                  </div><a href="post.html">
+                    <h3 class="h4">Alberto Savoia Can Teach You About Interior</h3></a>
+                  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                  <div class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
+                      <div class="avatar"><img src="img/avatar-1.jpg" alt="..." class="img-fluid"></div>
+                      <div class="title"><span>John Doe</span></div></a>
+                    <div class="date"><i class="icon-clock"></i> 2 months ago</div>
+                    <div class="comments meta-last"><i class="icon-comment"></i>12</div>
+                  </div>
+                </div>
+              </div>
+              {% endcomment %}
+            </div>
+            <!-- Pagination -->
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-template d-flex justify-content-center">
+                <li class="page-item"><a href="#" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+                <li class="page-item"><a href="#" class="page-link active">1</a></li>
+                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                <li class="page-item"><a href="#" class="page-link">3</a></li>
+                <li class="page-item"><a href="#" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+              </ul>
+            </nav>
+          </div>
+        </main>
+{% include 'blog/aside.html' %}
+      </div>
+    </div>
+
+ {% endblock body %}
+    <!-- Page Footer-->

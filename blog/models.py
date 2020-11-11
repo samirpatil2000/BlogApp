@@ -11,12 +11,18 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_cat_url(self):
+        return reverse('cat-detail',kwargs={'id':self.pk})
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=10, default='Tag')
 
     def __str__(self):
         return self.name
+
+    def get_absolute_tag_url(self):
+        return reverse('tag-detail',kwargs={'id':self.pk})
 
 
 class Author(models.Model):
