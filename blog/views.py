@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Post,Author,Category,Tag,Comment
+from .models import Post,Author,Category,Tag,Comment,LikePost,DislikePost
 from .forms import CreatePostForm,UpdatePostForm,CommentForm
 
 # Create your views here.
@@ -15,18 +15,25 @@ def index(request):
     return render(request,'blog/index.html',context)
 
 def blogs(request):
+
     cats=Category.objects.all()
     tags=Tag.objects.all()
     posts = Post.objects.all()
+    latest = Post.objects.order_by('-date_posted')[0:3]
 
     # post_count_per_tag=Post.objects.filter()
 
-    latest= Post.objects.order_by('-date_posted')[0:3]
+    title_contains_query = request.GET.get('search')
+    if title_contains_query != '' and title_contains_query is not None:
+        posts = posts.filter(title__icontains=title_contains_query)
+
+
     context = {
         'object': posts,
         'latest':latest,
         'cats':cats,
         'tags':tags,
+        'search_query': title_contains_query
     }
     return render(request,'blog/blog.html',context)
 
@@ -36,6 +43,8 @@ def post_detail(request, id):
 
     post=get_object_or_404(Post,id=id)
     latest= Post.objects.order_by('-date_posted')[0:3]
+
+    author=post.author.user
 
     comments=Comment.objects.filter(post__id=id)
     comment_form = CommentForm()
@@ -55,6 +64,7 @@ def post_detail(request, id):
         'latest':latest,
         'cats':cats,
         'tags':tags,
+        'author':author,
 
         # COMMENTS
         'comments':comments,
@@ -171,3 +181,42 @@ def search_function(request):
         'search_query':title_contains_query
     }
     return render(request,'blog/blog.html',context)
+
+
+@login_required
+def like_post(request,id):
+    post=Post.objects.get(id=id)
+
+    # like_post=LikePost.objects.get(post=post,user=request.user)
+    # dislike_post=DislikePost.objects.get(post=post,user=request.user)
+
+
+    if LikePost.objects.filter(post=post,user=request.user).exists():
+        like_remove=LikePost.objects.get(post=post,user=request.user).delete()
+        # like_remove.save()
+
+    if DislikePost.objects.filter(post=post,user=request.user).exists():
+        dislike_remove = DislikePost.objects.get(post=post, user=request.user).delete()
+        # dislike_remove.save()
+
+    LikePost.objects.create(post=post,user=request.user)
+    return redirect('post',id=id)
+
+@login_required
+def dislike_post(request,id):
+    post=Post.objects.get(id=id)
+
+    #like_post = LikePost.objects.get(post=post, user=request.user)
+    # dislike_post=DislikePost.objects.get(post=post,user=request.user)
+
+    if DislikePost.objects.filter(post=post,user=request.user).exists():
+        like_remove=DislikePost.objects.get(post=post,user=request.user).delete()
+        # like_remove.save()
+
+    if LikePost.objects.filter(post=post, user=request.user).exists():
+        like_remove=LikePost.objects.get(post=post,user=request.user).delete()
+        # like_remove.save()
+
+    DislikePost.objects.create(post=post,user=request.user)
+    # dislike.save()
+    return redirect('post',id=id)

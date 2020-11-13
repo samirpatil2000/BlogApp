@@ -15,4 +15,8 @@ urlpatterns = [
 
     #search
     path('search/',views.search_function,name='search'),
+
+    #like and dislike
+    path('like/<id>',views.like_post,name='like'),
+    path('dislike/<id>',views.dislike_post,name='dislike'),
  ]
