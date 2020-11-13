@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,get_object_or_404,redirect
 from .models import Post,Author,Category,Tag,Comment,LikePost,DislikePost
-from .forms import CreatePostForm,UpdatePostForm,CommentForm
+from .forms import CreatePostForm,UpdatePostForm,CommentForm,ImageForm
 
 # Create your views here.
 def index(request):
@@ -38,6 +38,7 @@ def blogs(request):
     return render(request,'blog/blog.html',context)
 
 def post_detail(request, id):
+
     cats=Category.objects.all()
     tags=Tag.objects.all()
 
@@ -48,6 +49,7 @@ def post_detail(request, id):
 
     comments=Comment.objects.filter(post__id=id)
     comment_form = CommentForm()
+
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
@@ -55,7 +57,6 @@ def post_detail(request, id):
             user_comment.post=post
             user_comment.save()
             return redirect('post',id=id)
-
 
     # cat_post=Post.objects.filter
 
@@ -71,17 +72,33 @@ def post_detail(request, id):
         'comment_form':comment_form,
 
     }
+
+    if request.user.is_authenticated:
+        if LikePost.objects.filter(post=post, user=request.user).exists():
+            context['is_like']='active'
+        if DislikePost.objects.filter(post=post, user=request.user).exists():
+            context['is_dislike']='active'
+
     return render(request,'blog/post-detail.html',context)
 
 
 @login_required
 def create_post(request):
     author_=Author.objects.get(user=request.user)
+
+
     if author_ is None:
         messages.warning(request,"Sorry You are not allow to write the post")
         return redirect('index')
+
+    # imageform = ImageForm()
+
+
     form=CreatePostForm()
     if request.method=="POST":
+        # imageform = ImageForm(request.POST or None, request.FILES or None)
+        # if imageform.is_valid():
+        #     imageform.save()
         form=CreatePostForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             post=form.save(commit=False)
@@ -91,10 +108,18 @@ def create_post(request):
             return redirect('index')
 
     context={
-        "form":form
+        "form":form,
+        # "imageform":imageform,
     }
     return render(request,'blog/create-post.html',context)
 
+# def add_image(request):
+#     imageform = ImageForm()
+#     if request.method == "POST":
+#         imageform = ImageForm(request.POST or None, request.FILES or None)
+#         if imageform.is_valid():
+#             imageform.save()
+#
 
 def update_post(request,id):
     author_=Author.objects.get(user=request.user)
@@ -220,3 +245,20 @@ def dislike_post(request,id):
     DislikePost.objects.create(post=post,user=request.user)
     # dislike.save()
     return redirect('post',id=id)
+
+@login_required
+def save_post(request,id):
+    post =Post.objects.get(id=id)
+    posts=Post.objects.filter(id=id,is_save=request.user)
+
+    if posts.exists():
+        messages.warning(request, "Post is remove from save")
+        post.is_save.remove(request.user)
+        post.save()
+    else:
+        messages.info(request,"Post is saved")
+        post.is_save.add(request.user)
+        post.save()
+
+    return redirect('post',id=id)
+

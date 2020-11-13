@@ -40,3 +40,6 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['name', 'parent', 'email', 'content']
+
+class ImageForm(forms.Form):
+    image=forms.ImageField(required=True)

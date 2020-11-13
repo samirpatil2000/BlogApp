@@ -19,4 +19,7 @@ urlpatterns = [
     #like and dislike
     path('like/<id>',views.like_post,name='like'),
     path('dislike/<id>',views.dislike_post,name='dislike'),
+
+    #save post
+    path('save/<id>',views.save_post,name='save-post'),
  ]
