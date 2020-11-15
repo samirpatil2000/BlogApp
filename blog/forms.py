@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post,Comment
+from .models import Post,Comment,Image
 from mptt.forms import TreeNodeChoiceField
 
 
@@ -41,5 +41,7 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['name', 'parent', 'email', 'content']
 
-class ImageForm(forms.Form):
-    image=forms.ImageField(required=True)
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model=Image
+        fields=['image']

@@ -1,8 +1,22 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,get_object_or_404,redirect
-from .models import Post,Author,Category,Tag,Comment,LikePost,DislikePost
-from .forms import CreatePostForm,UpdatePostForm,CommentForm,ImageForm
+from .models import (
+                    Post,
+                    Author,
+                    Category,
+                    Tag,
+                    Comment,
+                    LikePost,
+                    DislikePost,
+Image,
+                    )
+from .forms import (
+                    CreatePostForm,
+                    UpdatePostForm,
+                    CommentForm,
+                    ImageForm,
+                    )
 
 # Create your views here.
 def index(request):
@@ -104,8 +118,9 @@ def create_post(request):
             post=form.save(commit=False)
             post.author=author_
             post.save()
+            id = post.pk
             messages.warning(request,'You Post Has Been Created')
-            return redirect('index')
+            return redirect('post',id)
 
     context={
         "form":form,
@@ -124,6 +139,7 @@ def create_post(request):
 def update_post(request,id):
     author_=Author.objects.get(user=request.user)
     post=Post.objects.get(id=id)
+    images=Image.objects.filter(posts=post)
 
     if post.author.user != request.user:
         messages.warning(request, "Restricted ..!")
@@ -147,7 +163,9 @@ def update_post(request,id):
 
     })
     context = {
-        "form": form
+        "form": form,
+        'post':post,
+        'images':images,
     }
     return render(request, 'blog/update-post.html', context)
 def delete_post(request,id):
@@ -262,3 +280,19 @@ def save_post(request,id):
 
     return redirect('post',id=id)
 
+def add_image(request,id):
+    post=Post.objects.get(id=id)
+
+    add_image_form=ImageForm()
+    if request.method=='POST':
+        add_image_form=ImageForm(request.POST or None,request.FILES or None)
+        if add_image_form.is_valid():
+            images=add_image_form.save(commit=False)
+            images.posts=post
+            images.save()
+            return redirect('update_post',id)
+    context={
+        'image_form':add_image_form,
+        'post_title':post.title,
+    }
+    return render(request,'blog/add_image.html',context)

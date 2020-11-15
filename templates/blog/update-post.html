@@ -4,7 +4,7 @@
   {% block body %}
 {% load crispy_forms_tags %}
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="container">
         <div class="col-lg-8 col-md-6">
@@ -15,6 +15,13 @@
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Save</button>
             </div>
+            <a href="{% url 'add_image' post.id %}" class="btn btn-outline-info">Add Images</a>
+        </div>
+        <div>
+            {% for obj in images %}
+            <h2>{{ forloop.counter }}</h2>
+            <img src="{{ obj.image.url }}" class="img-fluid">
+            {% endfor %}
         </div>
     </div>
 </form>

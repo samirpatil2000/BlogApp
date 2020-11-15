@@ -22,4 +22,7 @@ urlpatterns = [
 
     #save post
     path('save/<id>',views.save_post,name='save-post'),
+
+    #add_image
+    path('add_image/<id>',views.add_image,name='add_image'),
  ]
