@@ -45,6 +45,11 @@
                   <p class="lead">{{ object.content }}</p>
                   <p>{{ object.content }}</p>
                   <p> <img src="img/featured-pic-3.jpeg" alt="..." class="img-fluid"></p>
+                  {% for img in object.images.all %}
+                  <p> <img src="{{ img.image.url }}" alt="..." class="img-fluid"></p>
+                  {% empty %}
+                  <h2>NO Images</h2>
+                  {% endfor %}
                   <h3>Lorem Ipsum Dolor</h3>
                   <p>{{ object.content }}</p>
                   <blockquote class="blockquote">

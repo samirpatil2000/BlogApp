@@ -1,6 +1,9 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth import login, authenticate, logout
-from account.forms import RegistrationForm, AccountAuthenticationForm#, AccountUpdateForm
+from account.forms import RegistrationForm, AccountAuthenticationForm,UpdateProfileForm#, AccountUpdateForm
+from .models import Account
 
 # Create your views here.
 def index(request):
@@ -59,3 +62,94 @@ def login_view(request):
     return render(request, "account/login.html", context)
 
 
+
+#TODO this is not correct method
+"""
+@login_required
+def update_profile(request):
+    account=Account.objects.get(email=request.user.email)
+    if request.method == 'POST':
+        edit_form=UpdateProfileForm(request.POST or None,request.FILES or None,instance=account)
+        if edit_form.is_valid():
+            acc_profile=edit_form.save(commit=False)
+            acc_profile.save()
+            account=acc_profile
+            messages.success(request,f"Your Profile is updated successfully{account.email}")
+            return redirect('profile')
+        else:
+            messages.warning(request,"Something Went Wrong..!")
+            return redirect('profile')
+    form=UpdateProfileForm(
+        initial={
+            "email":account.email,
+            "username":account.username,
+            "phone_number":account.phone_number,
+        }
+    )
+    context={
+        'form':form,
+        # 'account':account,
+    }
+    return render(request,'account/profile_edit.html',context)
+"""
+
+@login_required
+def update_profile(request):
+    """
+    context={
+
+    }
+    if request.method == 'POST':
+        edit_form=UpdateProfileForm(request.POST ,instance=request.user)
+        if edit_form.is_valid():
+            edit_form.initial={
+                "email":request.POST['email'],
+                "username":request.POST['username'],
+            }
+            edit_form.save()
+            context['success_message'] = "Updated"
+            messages.success(request,"Your Profile is updated successfully")
+            # return redirect('profile')
+        else:
+            messages.warning(request,"Something Went Wrong..!")
+            # return redirect('profile')
+    else:
+        edit_form=UpdateProfileForm(
+            initial={
+                "email":request.user.email,
+                "username":request.user.username,
+                "phone_number":request.user.phone_number,
+            }
+            )
+
+    context['account_form']=edit_form,
+    """
+
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    context = {}
+    if request.POST:
+        form = UpdateProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.initial = {
+                "email": request.POST['email'],
+                "username": request.POST['username'],
+                "phone_number": request.POST['phone_number'],
+            }
+            form.save()
+            messages.success(request, "Your Profile is updated successfully")
+            context['success_message'] = "Updated"
+    else:
+        form = UpdateProfileForm(
+            initial={  # TODO:  is user for initial value already filled in the form
+                "email": request.user.email,
+                "username": request.user.username,
+                "phone_number": request.user.phone_number,
+
+            }
+        )
+
+    context['form'] = form
+
+    return render(request,'account/profile_edit.html',context)

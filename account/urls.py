@@ -27,4 +27,8 @@ urlpatterns = [
     path('password_change/', auth_views.PasswordChangeView.as_view(template_name='account/password_change.html'),
          name='password_change'),
 
+
+    #Update Profile
+    path('update-profile/',views.update_profile,name='profile'),
+
  ]

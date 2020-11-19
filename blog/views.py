@@ -9,7 +9,7 @@ from .models import (
                     Comment,
                     LikePost,
                     DislikePost,
-Image,
+                    Image,
                     )
 from .forms import (
                     CreatePostForm,
@@ -296,3 +296,4 @@ def add_image(request,id):
         'post_title':post.title,
     }
     return render(request,'blog/add_image.html',context)
+
