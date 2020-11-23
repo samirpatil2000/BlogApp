@@ -59,6 +59,9 @@ def post_detail(request, id):
     post=get_object_or_404(Post,id=id)
     latest= Post.objects.order_by('-date_posted')[0:3]
 
+    #IMages
+    images=Image.objects.filter(posts=post)
+
     author=post.author.user
 
     comments=Comment.objects.filter(post__id=id)
@@ -80,6 +83,9 @@ def post_detail(request, id):
         'cats':cats,
         'tags':tags,
         'author':author,
+
+        #images
+        'images':images,
 
         # COMMENTS
         'comments':comments,

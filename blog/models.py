@@ -98,3 +98,4 @@ class DislikePost(models.Model):
     def __str__(self):
         return f'{self.post.title} dislike by {self.user}'
 
+#python3 manage.py runserver
