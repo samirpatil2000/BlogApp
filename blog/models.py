@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 
 class Image(models.Model):
     posts=models.ForeignKey('Post',on_delete=models.CASCADE,blank=True,null=True)
-    image=models.ImageField()
+    image=models.ImageField(upload_to='blog_images')
 
 class Category(models.Model):
     name=models.CharField(max_length=10,default='Cat')

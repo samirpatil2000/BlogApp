@@ -44,26 +44,33 @@
                 <div class="post-body">
                   <p class="lead">{{ object.content }}</p>
                   <p>{{ object.content }}</p>
-                  <p> <img src="{% static 'img/featured-pic-3.jpeg' %}" alt="..." class="img-fluid"></p>
+                      {% comment %}
+                      <p>
+                        <img src="{% static 'img/featured-pic-3.jpeg' %}" alt="..." class="img-fluid">
+                      </p>
+                      {% endcomment %}
                   {% for img in images %}
                   <p> <img src="{{ img.image.url }}" alt="..." class="img-fluid"></p>
                   {% empty %}
                   <h2>NO Images</h2>
                   {% endfor %}
-                  <h3>Lorem Ipsum Dolor</h3>
-                  <p>{{ object.content }}</p>
-                  <blockquote class="blockquote">
-                    <p>{{ object.content }}</p>
-                    <footer class="blockquote-footer">Someone famous in
-                      <cite title="Source Title">Source Title</cite>
-                    </footer>
-                  </blockquote>
+                            {% comment %}
+                                  <h3>Lorem Ipsum Dolor</h3>
+                                  <p>{{ object.content }}</p>
+                                  <blockquote class="blockquote">
+                                    <p>{{ object.content }}</p>
+                                    <footer class="blockquote-footer">Someone famous in
+                                      <cite title="Source Title">Source Title</cite>
+                                    </footer>
+                                  </blockquote>
+                            {% endcomment %}
                 </div>
                 <div class="post-tags">
                   {% for tag in object.tag.all %}
                   <a href="#" class="tag">#{{ tag.name }}</a>
                   {% endfor %}
                 </div>
+                {% comment %}
                 <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row"><a href="#" class="prev-post text-left d-flex align-items-center">
                     <div class="icon prev"><i class="fa fa-angle-left"></i></div>
                     <div class="text"><strong class="text-primary">Previous Post </strong>
@@ -73,6 +80,7 @@
                       <h6>I Bought a Wedding Dress.</h6>
                     </div>
                     <div class="icon next"><i class="fa fa-angle-right">   </i></div></a></div>
+                {% endcomment %}
 
 
                 <div class="post-comments">
