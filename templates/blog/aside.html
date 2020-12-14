@@ -22,7 +22,7 @@
                 {% for obj in latest %}
                 <a href="{{ obj.get_absolute_post_url }}">
                 <div class="item d-flex align-items-center">
-                  <div class="image"><img src="{% static 'img/small-thumbnail-3.jpg' %}" alt="..." class="img-fluid"></div>
+                  <div class="image"><img src="{{ obj.thumbnail.url }}" alt="..." class="img-fluid"></div>
                   <div class="title"><strong>{{ obj.title }}</strong>
                     <div class="d-flex align-items-center">
                       <div class="views"><i class="icon-eye"></i> 500</div>

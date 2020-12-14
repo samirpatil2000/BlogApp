@@ -16,7 +16,7 @@
               <div class="post col-xl-6">
                 <div class="post-thumbnail">
                   <a href="{{ obj.get_absolute_post_url }}">
-                    <img src="{% static 'img/blog-post-1.jpeg' %}" alt="..." class="img-fluid">
+                    <img src="{{ obj.thumbnail.url }}" alt="..." class="img-fluid">
                   </a>
                 </div>
                 <div class="post-details">
